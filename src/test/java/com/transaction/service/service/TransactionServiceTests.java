@@ -48,14 +48,13 @@ public class TransactionServiceTests {
     @Autowired
     TransactionService transactionService;
 
-    /* Commenting the test case as the new logic needs re-work on this test case.
     @Test
     public void testSaveTransaction_success() throws Exception {
         when(accountServiceMock.getAccountById(any(Long.class))).thenReturn(Optional.of(accountMock));
         when(operationTypeServiceMock.getOperationTypeById(any(Integer.class))).thenReturn(Optional.of(operationTypeMock));
         transactionService.saveTransaction(transactionDtoMock);
-        verify(transactionRepositoryMock, times(1)).save(any());
-    }*/
+        verify(transactionRepositoryMock, atLeast(1)).save(any());
+    }
 
     @Test
     public void testSaveTransaction_accountNotFound() throws Exception {

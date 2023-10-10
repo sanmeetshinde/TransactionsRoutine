@@ -5,6 +5,7 @@ import com.transaction.service.model.Account;
 import com.transaction.service.model.OperationType;
 import com.transaction.service.model.Transaction;
 import com.transaction.service.repository.TransactionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class TransactionService {
      * Adjusts the Amount as positive or negative based on Operation Type.
      * @param transactionDto
      */
+    @Transactional
     public void saveTransaction(TransactionDto transactionDto) {
 
         // Validate the Account exists.
@@ -66,8 +68,9 @@ public class TransactionService {
                         transaction.setBalance(transaction.getBalance().subtract(t.getBalance().abs()));
                         t.setBalance(new BigDecimal(0));
                     } else {
-                        transaction.setBalance(new BigDecimal(0));
                         t.setBalance(t.getBalance().add(transaction.getBalance()));
+                        transaction.setBalance(new BigDecimal(0));
+                        break;
                     }
                 }
             }

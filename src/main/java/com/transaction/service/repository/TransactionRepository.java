@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    @Query(nativeQuery = true, value = "SELECT * FROM transaction where ACCOUNT_ID=:accountId ORDER BY EVENT_DATE desc")
+    @Query(nativeQuery = true, value = "SELECT * FROM transaction where ACCOUNT_ID=:accountId ORDER BY EVENT_DATE")
     ArrayList<Transaction> findByAccountId(Long accountId);
 
 }
