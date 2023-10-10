@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 
 import static com.transaction.service.constants.Constants.ACCOUNT_NOT_FOUND;
 import static com.transaction.service.constants.Constants.OPERATION_NOT_FOUND;
@@ -55,6 +56,22 @@ public class TransactionService {
         Transaction transaction = transactionDto.toTransaction(account, operationType);
         if(operationType.isRegisterNegativeAmount()) {
             transaction.setAmount(transaction.getAmount().negate());
+            transaction.setBalance(transaction.getAmount());
+        } else {
+            transaction.setBalance(transaction.getAmount());
+            ArrayList<Transaction> previousTransactions = transactionRepository.findByAccountId(transaction.getAccount().getAccountId());
+            for(Transaction t : previousTransactions) {
+                if(t.getBalance().compareTo(new BigDecimal(0))==-1) {
+                    if(t.getBalance().abs().compareTo(transaction.getBalance())==-1) {
+                        transaction.setBalance(transaction.getBalance().subtract(t.getBalance().abs()));
+                        t.setBalance(new BigDecimal(0));
+                    } else {
+                        transaction.setBalance(new BigDecimal(0));
+                        t.setBalance(t.getBalance().add(transaction.getBalance()));
+                    }
+                }
+            }
+            previousTransactions.forEach(t -> transactionRepository.save(t));
         }
 
         // Save the Transaction.

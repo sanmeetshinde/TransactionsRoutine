@@ -1,5 +1,6 @@
 package com.transaction.service.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,6 +52,12 @@ public class Transaction {
      * Stores the Amount for each Transaction.
      */
     private BigDecimal amount;
+
+    /**
+     * Stores the Balance for each Transaction.
+     */
+    @JsonIgnore
+    private BigDecimal balance;
 
     /**
      * Stores the Timestamp for each Transaction.
